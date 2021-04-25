@@ -5,12 +5,11 @@ namespace ExamenIngresoAbril_2021
 {
     class Biblioteca
     {
+       static List<Libro> lista_libros = new List<Libro>();
+       static List<Socio> lista_socios = new List<Socio>();
+       static List<Prestamo> lista_prestamos = new List<Prestamo>();
         static void Main(string[] args)
         {   
-            
-
-            List<Libro> lista_libros = new List<Libro>();
-            List<Socio> lista_socios = new List<Socio>();
 
             Libro libro_harryPotter1 = new Libro("Harry Potter 1", 345, "Rowling");
             Libro libro_harryPotter2 = new Libro("Harry Potter 2", 346, "Rowling");
@@ -29,9 +28,10 @@ namespace ExamenIngresoAbril_2021
                     + "\n---------------------------------"
                 );
                 Console.WriteLine(
-                    "1) Libros\n" +
-                    "2) Socios\n" +
-                    "3) Salir\n"
+                    "1) Menu Libros\n" +
+                    "2) Menu Socios\n" +
+                    "3) Mostrar prestamos\n"+
+                    "4) Salir\n"
                 );
                 respuesta = Console.ReadLine();
                 flag = int.TryParse(respuesta, out newValue);
@@ -44,9 +44,12 @@ namespace ExamenIngresoAbril_2021
                             MostrarLibros(lista_libros);
                             break;
                         case 2:
-                            MenuSocios(lista_socios, lista_libros);
+                            MenuSocios(lista_socios, lista_libros,lista_prestamos);
                             break;
                         case 3:
+                            MostrarPrestamos(lista_prestamos);
+                            break;
+                        case 4:
                             Environment.Exit(1);
                             break;
                         default:
@@ -131,8 +134,11 @@ namespace ExamenIngresoAbril_2021
         }
 
 
-        public static void MenuSocios(List<Socio> socios, List<Libro> libros)
+        public static void MenuSocios(List<Socio> socios, List<Libro> libros, List<Prestamo> prestamos)
         {
+            Console.WriteLine("      Menu Socios"
+                   + "\n---------------------------------"
+               );
             while (true)
             {
                 string respuesta;
@@ -163,7 +169,7 @@ namespace ExamenIngresoAbril_2021
                         case 3:
                             int indice_socio = MostrarSocios(socios);
                             if(indice_socio >= 0)
-                                MenuSocio(socios[indice_socio],libros);
+                                MenuSocio(socios[indice_socio],libros,prestamos);
                             break;
                           
                         default:
@@ -276,7 +282,7 @@ namespace ExamenIngresoAbril_2021
             return -1;
         }
 
-        public static void MenuSocio(Socio socio, List<Libro> libros)
+        public static void MenuSocio(Socio socio, List<Libro> libros, List<Prestamo> prestamos)
         {
             while (true)
             {
@@ -307,14 +313,19 @@ namespace ExamenIngresoAbril_2021
                             break;
                         case 2:
                             Ejemplar ejemplar = MostrarLibrosSocio(libros);
-                            if(ejemplar != null)
+                            if (ejemplar != null)
+                            {
                                 socio.PedirEjemplar(ejemplar);
+                                prestamos.Add(new Prestamo(ejemplar, socio));
+                            }
                             break;
                         case 3:
+                            int aux = 0;
                             int indice_ejemplar = MostrarEjemplares(socio);
                             if (indice_ejemplar > -1) {
                                 foreach (Libro libro in libros)
                                 {
+                                    aux++;
                                     if (socio.Ejemplares_retirados[indice_ejemplar].Libro == libro)
                                     {
                                         libro.RegistrarEjemplar(socio.DevolverEjemplar(indice_ejemplar));
@@ -322,6 +333,8 @@ namespace ExamenIngresoAbril_2021
                                     }
                                 }
                             }
+                            if (indice_ejemplar == -1)
+                                Console.WriteLine("No hay ejemplar para devolver");
                             break;
                         default:
                             break;
@@ -366,6 +379,51 @@ namespace ExamenIngresoAbril_2021
             }
 
             return -1;
+        }
+
+
+        public static void MostrarPrestamos(List<Prestamo> prestamos)
+        {
+            if (prestamos.Count > 0)
+            {
+                while (true)
+                {
+                    string respuesta;
+                    bool flag;
+                    int newValue;
+                    int aux = 0;
+                    Console.WriteLine(
+                        "    Socio       |   Ejemplar        |   Fecha de prestamo   |     "
+                        );
+                    foreach (Prestamo prestamo in prestamos)
+                    {
+                        Console.WriteLine(
+                            prestamo.Socio.Nombre + " " + prestamo.Socio.Apellido + "    |    " +
+                            prestamo.Ejemplar.Libro.Nombre + "   |   " +
+                            prestamo.Fecha_prestado
+                            );
+
+
+                    }
+                    Console.Write("Ingrese 0 para salir: ");
+                    respuesta = Console.ReadLine();
+                    flag = int.TryParse(respuesta, out newValue);
+
+                    if (flag)
+                    {
+                        if (newValue == 0)
+                            break;
+                        else
+                        {
+                            Console.WriteLine("Opción ingresada incorrecta.");
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("No hay prestamos para mostrar.");
+            }
         }
     }
 }

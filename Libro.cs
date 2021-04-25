@@ -36,6 +36,9 @@ namespace ExamenIngresoAbril_2021
             string respuesta;
             bool flag;
             int newValue;
+            Console.WriteLine("      Menu Libro:"
+                   + "\n---------------------------------"
+               );
             Console.WriteLine("Libro: " + this.nombre);
             while (true)
             {
@@ -118,6 +121,9 @@ namespace ExamenIngresoAbril_2021
             string respuesta;
             bool flag;
             int newValue;
+            Console.WriteLine("      Menu Socio:"
+                   + "\n---------------------------------"
+               );
             Console.WriteLine("Libro: " + this.nombre);
             while (true)
             {
